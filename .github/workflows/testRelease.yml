@@ -40,7 +40,6 @@ jobs:
             @semantic-release/changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Test Outputs
         if: steps.semantic.outputs.new_release_published == 'true'
@@ -75,7 +74,6 @@ jobs:
             @semantic-release/changelog@3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Test Outputs
         if: steps.semantic.outputs.new_release_published == 'true'

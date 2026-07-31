@@ -1,10 +1,8 @@
 [![StepSecurity Maintained Action](https://raw.githubusercontent.com/step-security/maintained-actions-assets/main/assets/maintained-action-banner.png)](https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions)
 
 # Semantic Release Action
-![][version-image]
 ![][workflows-badge-image]
 [![Release date][release-date-image]][release-url]
-[![semantic-release][semantic-image]][semantic-url]
 [![npm license][license-image]][license-url]
 
 GitHub Action for [Semantic Release][semantic-url].
@@ -331,8 +329,6 @@ steps:
 This project is released under the [MIT License][license-url].
 
 <!-- Links: -->
-[version-image]: https://img.shields.io/github/package-json/v/step-security/semantic-release-action
-
 [workflows-badge-image]: https://github.com/step-security/semantic-release-action/workflows/Test%20Release/badge.svg
 
 [release-date-image]: https://img.shields.io/github/release-date/step-security/semantic-release-action
@@ -343,7 +339,5 @@ This project is released under the [MIT License][license-url].
 
 [license-image]: https://img.shields.io/npm/l/@step-security/semantic-release-action.svg
 [license-url]: https://github.com/step-security/semantic-release-action/blob/main/LICENSE
-
-[changelog-url]: https://github.com/step-security/semantic-release-action/blob/main/docs/CHANGELOG.md
 
 [github-packages-registry]: https://github.com/features/packages

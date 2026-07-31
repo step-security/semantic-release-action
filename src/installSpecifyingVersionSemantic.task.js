@@ -1,19 +1,19 @@
 const path = require('path');
 const core = require('@actions/core');
-const exec = require('./_exec');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
 const inputs = require('./inputs.json');
 
-/**
- * Install Specifying Version semantic-release
- * @returns {Promise<void>}
- */
+const execFileAsync = promisify(execFile);
+
 module.exports = async () => {
   const semantic_version = core.getInput(inputs.semantic_version);
-  const versionSuffix = semantic_version
-    ? `@${semantic_version}`
-    : '';
 
-  const {stdout, stderr} = await exec(`npm install semantic-release${versionSuffix} --no-audit --silent`, {
+  const pkg = semantic_version
+    ? `semantic-release@${semantic_version}`
+    : 'semantic-release';
+
+  const { stdout, stderr } = await execFileAsync('npm', ['install', pkg, '--no-audit', '--silent'], {
     cwd: path.resolve(__dirname, '..')
   });
   core.debug(stdout);

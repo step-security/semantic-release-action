@@ -1,20 +1,23 @@
 const path = require('path');
 const core = require('@actions/core');
-const exec = require('./_exec');
+const { execFile } = require('child_process');
+const { promisify } = require('util');
 
-/**
- * Pre-install extra dependecies
- * @returns {Promise<void>}
- */
+const execFileAsync = promisify(execFile);
+
 module.exports = async extras => {
   if (!extras) {
     return Promise.resolve();
   }
 
-  const _extras = extras.replace(/['"]/g, '').replace(/[\n\r]/g, ' ');
-  const silentFlag = process.env.RUNNER_DEBUG === '1' ? '' : '--silent';
+  const packages = extras
+    .split(/[\n\r]+/)
+    .map(p => p.trim())
+    .filter(Boolean);
 
-  const { stdout, stderr } = await exec(`npm install ${_extras} --no-audit ${silentFlag}`, {
+  const silentArgs = process.env.RUNNER_DEBUG === '1' ? [] : ['--silent'];
+
+  const { stdout, stderr } = await execFileAsync('npm', ['install', ...packages, '--no-audit', ...silentArgs], {
     cwd: path.resolve(__dirname, '..')
   });
   core.debug(stdout);
