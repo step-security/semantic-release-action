@@ -1,0 +1,7 @@
+[[IgnoredVulns]]
+id = "GHSA-mh99-v99m-4gvg"
+reason = "brace-expansion is bundled inside npm@11 (a dependency of @semantic-release/npm) and is not reachable at action runtime"
+
+[[IgnoredVulns]]
+id = "GHSA-r292-9mhp-454m"
+reason = "tar is bundled inside npm@11 (a dependency of @semantic-release/npm) and is not reachable at action runtime"
