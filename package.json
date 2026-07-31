@@ -4,7 +4,7 @@
   "description": "GitHub Action for Semantic Release",
   "main": "dist/index.js",
   "scripts": {
-    "build": "esbuild src/index.js --bundle --platform=node --conditions=import --external:typescript --outfile=dist/index.js"
+    "build": "esbuild src/index.js --bundle --platform=node --conditions=import --external:typescript --external:semantic-release --outfile=dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,9 @@
   "dependencies": {
     "@actions/core": "^3.0.0",
     "@actions/io": "^3.0.2",
-    "axios": "^1.18.0",
     "@cycjimmy/awesome-js-funcs": "^4.0.9",
-    "semantic-release": "^25.0.2"
+    "axios": "^1.18.0",
+    "semantic-release": "^25.0.8"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
