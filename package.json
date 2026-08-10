@@ -25,7 +25,7 @@
     "@actions/io": "^3.0.2",
     "@cycjimmy/awesome-js-funcs": "^4.0.9",
     "axios": "^1.18.0",
-    "semantic-release": "^25.0.8"
+    "semantic-release": "^25.0.9"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
