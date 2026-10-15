@@ -1,23 +1,3 @@
-<<<<<<< 6cde6d5d354fec28cb59ebbf0d572a7ca2d8d9e4
-const path = require('path');
-const core = require('@actions/core');
-const { execFile } = require('child_process');
-const { promisify } = require('util');
-const inputs = require('./inputs.json');
-
-const execFileAsync = promisify(execFile);
-
-module.exports = async () => {
-  const semantic_version = core.getInput(inputs.semantic_version);
-
-  const pkg = semantic_version
-    ? `semantic-release@${semantic_version}`
-    : 'semantic-release';
-
-  const { stdout, stderr } = await execFileAsync('npm', ['install', pkg, '--no-audit', '--silent'], {
-    cwd: path.resolve(__dirname, '..')
-  });
-=======
 import * as core from '@actions/core';
 import runNpm from './runNpm.js';
 import isNpmSpec from './isNpmSpec.js';
@@ -51,7 +31,6 @@ export default async () => {
       cwd: path.resolve(__dirname, '..')
     }
   );
->>>>>>> 4e7c39649f44ebeae632645fa857feee56409a63
   core.debug(stdout);
   core.error(stderr);
 };

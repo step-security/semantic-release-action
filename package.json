@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "esbuild src/index.js --bundle --platform=node --conditions=import --external:typescript --external:semantic-release --outfile=dist/index.js"
+    "build": "esbuild src/index.js --bundle --platform=node --format=esm --banner:js=\"import {createRequire as __cr} from 'module'; const require = __cr(import.meta.url);\" --conditions=import --external:typescript --external:semantic-release --outfile=dist/index.js"
   },
   "repository": {
     "type": "git",

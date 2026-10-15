@@ -45,6 +45,7 @@ jobs:
             @semantic-release/changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SKIP_NPM_AUTH: 'true'
 
       - name: Test Outputs
         if: steps.semantic.outputs.new_release_published == 'true'
@@ -54,8 +55,8 @@ jobs:
           echo ${{ steps.semantic.outputs.new_release_minor_version }}
           echo ${{ steps.semantic.outputs.new_release_patch_version }}
 
-  test-semantic-v15:
-    name: test-semantic-v15
+  test-semantic-v20:
+    name: test-semantic-v20
     runs-on: ubuntu-latest
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -70,7 +71,7 @@ jobs:
         uses: ./
         id: semantic
         with:
-          semantic_version: 15
+          semantic_version: 20
           dry_run: true
           branches: |
             [
@@ -78,10 +79,42 @@ jobs:
               {name: 'beta', prerelease: true},
               {name: 'alpha', prerelease: true}
             ]
-          branch: main
           extra_plugins: |
-            @semantic-release/git@7
-            @semantic-release/changelog@3
+            @semantic-release/git@10
+            @semantic-release/changelog@6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SKIP_NPM_AUTH: 'true'
+
+      - name: Test Outputs
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo ${{ steps.semantic.outputs.new_release_version }}
+          echo ${{ steps.semantic.outputs.new_release_major_version }}
+          echo ${{ steps.semantic.outputs.new_release_minor_version }}
+          echo ${{ steps.semantic.outputs.new_release_patch_version }}
+
+  test-non-node-project:
+    name: test-non-node-project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Semantic Release
+        uses: ./
+        id: semantic
+        with:
+          dry_run: true
+          working_directory: test/non-node-project
+          skip_npm_plugin: true
+          branches: |
+            [
+              'main',
+              'master',
+              {name: 'beta', prerelease: true},
+              {name: 'alpha', prerelease: true}
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -93,4 +126,57 @@ jobs:
           echo ${{ steps.semantic.outputs.new_release_minor_version }}
           echo ${{ steps.semantic.outputs.new_release_patch_version }}
 
+  test-working-directory-extends:
+    name: test-working-directory-extends
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
 
+      # Regression test: plugins declared in a config file reached
+      # through a relative `extends` must be resolvable when
+      # `working_directory` points to a subdirectory
+      - name: Semantic Release
+        uses: ./
+        id: semantic
+        with:
+          dry_run: true
+          working_directory: test/working-directory-project/packages/package-1
+          extra_plugins: '@semantic-release/exec'
+          branches: |
+            [
+              'main',
+              'master',
+              {name: 'beta', prerelease: true},
+              {name: 'alpha', prerelease: true}
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Regression test: last_release_* outputs must be available even
+  # when no new release is published (derived from the Git tags)
+  test-last-release-without-new-release:
+    name: test-last-release-without-new-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # no remote fetch happens when semantic-release skips a PR run,
+          # so all tags must be checked out up front
+          fetch-depth: 0
+
+      - name: Semantic Release
+        uses: ./
+        id: semantic
+        with:
+          dry_run: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SKIP_NPM_AUTH: 'true'
+
+      - name: Test last_release outputs
+        run: |
+          test -n "${{ steps.semantic.outputs.last_release_version }}"
+          echo "last_release_version: ${{ steps.semantic.outputs.last_release_version }}"
+          echo "last_release_git_tag: ${{ steps.semantic.outputs.last_release_git_tag }}"

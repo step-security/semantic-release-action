@@ -20,7 +20,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -65,7 +65,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       semantic_version: 20.0.1  # It is recommended to specify a version range
                                 # for semantic-release when using
@@ -75,7 +75,7 @@ steps:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
-If no version range is specified with `step-security/semantic-release-action@v6` then [semantic-release@latest](https://github.com/semantic-release/semantic-release/releases) is used.
+If no version range is specified with `step-security/semantic-release-action@v8` then [semantic-release@latest](https://github.com/semantic-release/semantic-release/releases) is used.
 
 #### branches
 > {Optional Input Parameter} The branches on which releases should happen.<br>`branches` requires **semantic-release v20 or above**.
@@ -85,7 +85,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       semantic_version: 20
       # you can set branches for semantic-release v20 or above.
@@ -138,7 +138,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       # You can specify specifying version range for the extra plugins if you prefer.
       extra_plugins: |
@@ -170,7 +170,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       dry_run: true
     env:
@@ -188,7 +188,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       ci: false
     env:
@@ -206,7 +206,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       # You can extend an existing shareable configuration.
       # And you can specify version range for the shareable configuration if you prefer.
@@ -226,7 +226,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       # You can select another working directory like a subdirectory for example.
       working_directory: ./code
@@ -243,7 +243,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       tag_format: custom-v${version}
     env:
@@ -265,7 +265,7 @@ steps:
       git config --global user.email github-actions@github.com
       git merge --no-ff origin/${{ github.event.pull_request.head.ref }} --message "${{ github.event.pull_request.title }}"
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       unset_gha_env: ${{ github.event_name == 'pull_request' }}
       ci: ${{ github.event_name == 'pull_request' && false || '' }}
@@ -282,7 +282,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       skip_npm_plugin: true
     env:
@@ -307,7 +307,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
       dry_run: true
     env:
@@ -341,7 +341,7 @@ steps:
   - name: Checkout
     uses: actions/checkout@v7
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     id: semantic   # Need an `id` for output variables
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -363,7 +363,7 @@ The `branch` input is no longer supported. Use the `branches` input instead:
 
 ```diff
   - name: Semantic Release
-    uses: step-security/semantic-release-action@v6
+    uses: step-security/semantic-release-action@v8
     with:
 -     branch: your-branch
 +     branches: your-branch

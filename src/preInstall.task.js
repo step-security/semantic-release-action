@@ -1,13 +1,3 @@
-<<<<<<< 6cde6d5d354fec28cb59ebbf0d572a7ca2d8d9e4
-const path = require('path');
-const core = require('@actions/core');
-const { execFile } = require('child_process');
-const { promisify } = require('util');
-
-const execFileAsync = promisify(execFile);
-
-module.exports = async extras => {
-=======
 import path, {dirname} from 'path';
 import { fileURLToPath } from 'url';
 import * as core from '@actions/core';
@@ -22,21 +12,10 @@ const __dirname = dirname(__filename);
  * @returns {Promise<void>}
  */
 export default async extras => {
->>>>>>> 4e7c39649f44ebeae632645fa857feee56409a63
   if (!extras) {
     return Promise.resolve();
   }
 
-<<<<<<< 6cde6d5d354fec28cb59ebbf0d572a7ca2d8d9e4
-  const packages = extras
-    .split(/[\n\r]+/)
-    .map(p => p.trim())
-    .filter(Boolean);
-
-  const silentArgs = process.env.RUNNER_DEBUG === '1' ? [] : ['--silent'];
-
-  const { stdout, stderr } = await execFileAsync('npm', ['install', ...packages, '--no-audit', ...silentArgs], {
-=======
   // Split into tokens and keep only plausible npm package specs: specs are
   // passed to npm without a shell, and tokens starting with `-` are dropped
   // so they can never be read as npm options
@@ -64,7 +43,6 @@ export default async extras => {
   const args = ['install', ...validSpecs, '--no-audit', ...quietArgs];
 
   const { stdout, stderr } = await runNpm(args, {
->>>>>>> 4e7c39649f44ebeae632645fa857feee56409a63
     cwd: path.resolve(__dirname, '..')
   });
   core.debug(stdout);

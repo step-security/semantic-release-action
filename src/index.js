@@ -1,14 +1,9 @@
-<<<<<<< 6cde6d5d354fec28cb59ebbf0d572a7ca2d8d9e4
-const axios = require('axios');
-const fs = require('fs');
-const core = require('@actions/core');
-const {
-=======
+import axios from 'axios';
+import fs from 'fs';
 import * as core from '@actions/core';
 import {
   warnDeprecatedInputs,
   warnIfNoPackageJson,
->>>>>>> 4e7c39649f44ebeae632645fa857feee56409a63
   handleBranchesOption,
   handleDryRunOption,
   handleCiOption,
@@ -110,12 +105,5 @@ const release = async () => {
   await windUpJob(result);
 };
 
-<<<<<<< 6cde6d5d354fec28cb59ebbf0d572a7ca2d8d9e4
 core.debug('Initialization successful');
-release().catch(core.setFailed);
-=======
-export default async () => {
-  core.debug('Initialization successful');
-  release().catch(handleError);
-};
->>>>>>> 4e7c39649f44ebeae632645fa857feee56409a63
+release().catch(handleError);
