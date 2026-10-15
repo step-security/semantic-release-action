@@ -7,13 +7,10 @@ branding:
 inputs:
   semantic_version:
     required: false
-    description: 'Specify specifying version range for semantic-release. If no version range is specified, latest version will be used by default'
+    description: 'Specify specifying version range for semantic-release (v20 or above required). If no version range is specified, latest version will be used by default'
   branches:
     required: false
-    description: 'The branches on which releases should happen. It will override the branches attribute in your configuration file. Support for semantic-release above v16. See https://semantic-release.gitbook.io/semantic-release/usage/configuration#branches for more information.'
-  branch:
-    required: false
-    description: 'The branch on which releases should happen. It will override the branch attribute in your configuration file. If the attribute is not configured on both sides, the default is master. Support for semantic-release older than v16.'
+    description: 'The branches on which releases should happen. It will override the branches attribute in your configuration file. Requires semantic-release v20 or above. See https://semantic-release.gitbook.io/semantic-release/usage/configuration#branches for more information.'
   extra_plugins:
     required: false
     description: 'Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.'
@@ -38,6 +35,9 @@ inputs:
   repository_url:
     required: false
     description: 'The Git repository url. If no repository url specified, current repository will be used by default.'
+  skip_npm_plugin:
+    required: false
+    description: 'Whether to skip the @semantic-release/npm default plugin. Useful for non-Node.js projects without a package.json file. When true, the default plugins are replaced with @semantic-release/commit-analyzer, @semantic-release/release-notes-generator and @semantic-release/github. It will override the plugins attribute in your configuration file.'
 outputs:
   new_release_published:
     description: 'Whether a new release was published'

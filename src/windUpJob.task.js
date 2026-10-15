@@ -1,15 +1,27 @@
-const core = require('@actions/core');
-const outputs = require('./outputs.json');
+import * as core from '@actions/core';
+import outputs from './outputs.json' with { type: 'json' };
+import getLastReleaseFromGit from './getLastReleaseFromGit.js';
+
+const setLastReleaseOutputs = (lastRelease = {}) => {
+  if (lastRelease.version) {
+    core.debug(`The last release was "${lastRelease.version}".`);
+    core.setOutput(outputs.last_release_version, lastRelease.version);
+    core.setOutput(outputs.last_release_git_head, lastRelease.gitHead);
+    core.setOutput(outputs.last_release_git_tag, lastRelease.gitTag);
+  }
+};
 
 /**
  * windUpJob
  * @param result
  * @returns {Promise<void>}
  */
-module.exports = async (result) => {
-  const resolved = await result;
-  if (!resolved) {
+export default async (result) => {
+  if (!result) {
     core.debug('No release published.');
+    // semantic-release resolves to `false` when no release is published and
+    // the last release is not part of the result: derive it from the Git tags
+    setLastReleaseOutputs(await getLastReleaseFromGit());
     return;
   }
 
@@ -18,14 +30,9 @@ module.exports = async (result) => {
     commits = [],
     nextRelease = {},
     releases = [],
-  } = resolved;
+  } = result;
 
-  if (lastRelease?.version) {
-    core.debug(`The last release was "${lastRelease.version}".`);
-    core.setOutput(outputs.last_release_version, lastRelease.version);
-    core.setOutput(outputs.last_release_git_head, lastRelease.gitHead);
-    core.setOutput(outputs.last_release_git_tag, lastRelease.gitTag);
-  }
+  setLastReleaseOutputs(lastRelease);
 
   if (!nextRelease?.version) {
     core.debug('No release published.');
@@ -48,7 +55,7 @@ module.exports = async (result) => {
   core.setOutput(outputs.new_release_minor_version, minor);
   core.setOutput(outputs.new_release_patch_version, patch);
   core.setOutput(outputs.new_release_channel, channel);
-  core.setOutput(outputs.new_release_notes, notes);  
+  core.setOutput(outputs.new_release_notes, notes);
   core.setOutput(outputs.new_release_git_head, gitHead);
   core.setOutput(outputs.new_release_git_tag, gitTag);
 };

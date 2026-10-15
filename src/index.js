@@ -1,20 +1,26 @@
-const axios = require('axios');
-const fs = require('fs');
-const core = require('@actions/core');
-const {
+import axios from 'axios';
+import fs from 'fs';
+import * as core from '@actions/core';
+import {
+  warnDeprecatedInputs,
+  warnIfNoPackageJson,
   handleBranchesOption,
   handleDryRunOption,
   handleCiOption,
   handleExtends,
   handleTagFormat,
   handleRepositoryUrlOption,
-} = require('./handleOptions');
-const setUpJob = require('./setUpJob.task');
-const installSpecifyingVersionSemantic = require('./installSpecifyingVersionSemantic.task');
-const preInstall = require('./preInstall.task');
-const cleanupNpmrc = require('./cleanupNpmrc.task');
-const windUpJob = require('./windUpJob.task');
-const inputs = require('./inputs.json');
+  handleSkipNpmPluginOption,
+} from './handleOptions.js';
+import handleError from './handleError.js';
+import setUpJob from './setUpJob.task.js';
+import installSpecifyingVersionSemantic from './installSpecifyingVersionSemantic.task.js';
+import assertSemanticReleaseVersion from './assertSemanticReleaseVersion.task.js';
+import preInstall from './preInstall.task.js';
+import extendNodePath from './extendNodePath.task.js';
+import cleanupNpmrc from './cleanupNpmrc.task.js';
+import windUpJob from './windUpJob.task.js';
+import inputs from './inputs.json' with { type: 'json' };
 
 async function validateSubscription() {
   let repoPrivate;
@@ -66,9 +72,17 @@ const release = async () => {
     process.chdir(core.getInput(inputs.working_directory));
   }
   await setUpJob();
+  warnDeprecatedInputs();
+  warnIfNoPackageJson();
   await installSpecifyingVersionSemantic();
+  await assertSemanticReleaseVersion();
   await preInstall(core.getInput(inputs.extra_plugins));
   await preInstall(core.getInput(inputs.extends));
+
+  // Expose the action's node_modules to the CommonJS resolver fallback so
+  // pre-installed plugins are found even when semantic-release resolves them
+  // from the working directory or from a relatively-extended config file
+  await extendNodePath();
 
   if (core.getInput(inputs.unset_gha_env) === 'true') {
     core.debug('Unset GITHUB_ACTIONS environment variable');
@@ -76,13 +90,15 @@ const release = async () => {
   }
 
   const semanticRelease = await import('semantic-release');
+  const branchesOption = handleBranchesOption();
   const result = await semanticRelease.default({
-    ...handleBranchesOption(),
+    ...branchesOption,
     ...handleDryRunOption(),
     ...handleCiOption(),
     ...handleExtends(),
     ...handleTagFormat(),
-    ...handleRepositoryUrlOption()
+    ...handleRepositoryUrlOption(),
+    ...handleSkipNpmPluginOption()
   });
 
   await cleanupNpmrc();
@@ -90,4 +106,4 @@ const release = async () => {
 };
 
 core.debug('Initialization successful');
-release().catch(core.setFailed);
+release().catch(handleError);

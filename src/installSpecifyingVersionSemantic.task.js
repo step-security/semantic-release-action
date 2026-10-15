@@ -1,21 +1,36 @@
-const path = require('path');
-const core = require('@actions/core');
-const { execFile } = require('child_process');
-const { promisify } = require('util');
-const inputs = require('./inputs.json');
+import * as core from '@actions/core';
+import runNpm from './runNpm.js';
+import isNpmSpec from './isNpmSpec.js';
+import inputs from './inputs.json' with { type: 'json' };
+import path, {dirname} from 'path';
+import { fileURLToPath } from 'url';
 
-const execFileAsync = promisify(execFile);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-module.exports = async () => {
+/**
+ * Install Specifying Version semantic-release
+ * @returns {Promise<void>}
+ */
+export default async () => {
   const semantic_version = core.getInput(inputs.semantic_version);
 
-  const pkg = semantic_version
-    ? `semantic-release@${semantic_version}`
-    : 'semantic-release';
+  // Reject implausible version specs early (also prevents silently falling
+  // back to "latest"); the spec is passed to npm without a shell
+  if (semantic_version && !isNpmSpec(semantic_version)) {
+    throw new Error(`Invalid semantic_version input: ${semantic_version}`);
+  }
 
-  const { stdout, stderr } = await execFileAsync('npm', ['install', pkg, '--no-audit', '--silent'], {
-    cwd: path.resolve(__dirname, '..')
-  });
+  const versionSuffix = semantic_version
+    ? `@${semantic_version}`
+    : '';
+
+  const {stdout, stderr} = await runNpm(
+    ['install', `semantic-release${versionSuffix}`, '--no-audit', '--loglevel', 'error'],
+    {
+      cwd: path.resolve(__dirname, '..')
+    }
+  );
   core.debug(stdout);
   core.error(stderr);
 };
