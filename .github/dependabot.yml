@@ -9,3 +9,8 @@ updates:
     directory: /
     schedule:
       interval: daily
+
+  - package-ecosystem: npm
+    directory: /test/working-directory-project/packages/package-1
+    schedule:
+      interval: daily
