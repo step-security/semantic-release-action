@@ -1,4 +1,15 @@
 // stringToJson.js
+const strToJsonFunc = (str) => (new Function(`return ${str}`))();
+const strToJson = (str) => {
+  try {
+    return strToJsonFunc(str);
+  } catch (e) {
+    return str;
+  }
+};
+
+export default (str) => strToJson(strToJson(str));
+// stringToJson.js
 // NOTE: The input string is evaluated as a JavaScript expression. This is
 // required for backward compatibility with documented `branches` configs
 // which use JS syntax (single-quoted strings, unquoted object keys), so it
