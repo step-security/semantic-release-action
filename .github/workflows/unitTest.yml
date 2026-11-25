@@ -8,8 +8,12 @@ on:
     branches:
       - main
 
+permissions: {}
+
 jobs:
   unit-test:
+    permissions:
+      contents: read  # for actions/checkout to fetch code
     name: unit-test
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,11 +27,16 @@ jobs:
         node-version: [22, 24]
         os: ${{ fromJSON(github.actor == 'dependabot[bot]' && '["ubuntu-latest"]' || '["ubuntu-latest", "windows-latest"]') }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
